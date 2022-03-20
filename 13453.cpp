@@ -5,7 +5,7 @@
 using namespace std;
 
 /*
-In partial judge problem, you need to compile two .cpp files and a header file together.
+In partial judge problem, you need to compile two .cpp files and a header file together. aaaa
 For compile multiple .cpp files and .h headers, please refer to the following tutorial.
 Chinese:
 https://github.com/htchen/i2p-nthu/blob/master/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88%E4%B8%80/%E5%A6%82%E4%BD%95compile%E5%A4%9A%E5%80%8B%E6%AA%94%E6%A1%88/%E5%A6%82%E4%BD%95%20compile%20%E5%A4%9A%E5%80%8B%E6%AA%94%E6%A1%88.md
@@ -27,17 +27,21 @@ int main()
 
     InitialzeStage(W, H);
 
-    for (int i=0; i<M; i++){
+    for (int i = 0; i < M; i++)
+    {
         cin >> command;
-        if(command == "SHOOT"){
+        if (command == "SHOOT")
+        {
             cin >> col;
             ShootNormal(col, W);
         }
-        else if(command == "SPECIAL"){
+        else if (command == "SPECIAL")
+        {
             cin >> col;
             ShootSpecial(col, W);
         }
-        else if(command == "FRONT_ROW"){
+        else if (command == "FRONT_ROW")
+        {
             FrontRow(W);
         }
     }
