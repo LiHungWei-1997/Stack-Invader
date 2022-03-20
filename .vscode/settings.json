@@ -20,6 +20,10 @@
         // "/usr/local/include/opencv4"
     ],
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "__bit_reference": "cpp",
+        "__split_buffer": "cpp",
+        "string": "cpp",
+        "vector": "cpp"
     }
 }

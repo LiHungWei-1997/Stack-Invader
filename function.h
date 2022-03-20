@@ -5,7 +5,7 @@
 using namespace std;
 
 // [TODO]: Implement all member functions in BaseStack
-template < class T >
+template <class T>
 class BaseStack
 {
 public:
@@ -22,22 +22,22 @@ public:
     int size();
 
     // Return the top element
-    T& top();
+    T &top();
 
     // Insert a new element at top
-    void push(const T& item);
+    void push(const T &item);
 
     // Delete one element from top
     void pop();
 
 private:
-    T* _stack;
+    T *_stack;
     int _top;
     int _capacity;
 };
 
 // [TODO]: Implement all member functions in BaseQueue
-template < class T >
+template <class T>
 class BaseQueue
 {
 public:
@@ -54,20 +54,19 @@ public:
     int size();
 
     // Return the front element
-    T& front();
+    T &front();
 
     // Insert a new element at rear
-    void push(const T& item);
+    void push(const T &item);
 
     // Delete one element from front
     void pop();
 
 private:
-    T* _queue;
+    T *_queue;
     int _front, _rear;
     int _capacity;
 };
-
 
 // [TODO]: Implement the following 6 functions which are the core of the game.
 
@@ -91,8 +90,6 @@ void ShowResult(int W);
 
 // free the memory that allocated in the program.
 void deleteStage();
-
-
 
 // The codes bellow prevent you from importing C++ containers.
 // Nothing needed to be implemented below.
