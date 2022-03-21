@@ -243,7 +243,7 @@ int main()
 
 int main()
 {
-    //char buffer[256] = {0};
+    // char buffer[256] = {0};
     string s;
     std::ifstream ifs("./13453_sampleIn.txt", std::ios::in);
     if (!ifs.is_open())
@@ -251,16 +251,20 @@ int main()
         cout << "Failed to open file.\n";
     }
 
-    int W, H, M, enemy, inverse_enemy;
+    int W, H, M;
     ifs >> W;
     ifs >> H;
     ifs >> M;
 
+    char enemy, inverse_enemy;
+
     cout << "W: " << W << ", H: " << H << ", M: " << M << endl;
 
-    BaseStack<int> pos_stack[6];
-    for (int i = 0; i < H; i++){
-        for (int j = 0; j < W; j++){
+    BaseStack<char> pos_stack[6];
+    for (int i = 0; i < H; i++)
+    {
+        for (int j = 0; j < W; j++)
+        {
             ifs >> enemy;
             pos_stack[j].push(enemy);
         }
@@ -272,45 +276,28 @@ int main()
     }
     */
 
-    BaseStack<int> inverse_stack[6];
+    //ShowResult (Consider without NA value)
+    BaseStack<char> inverse_stack[6];
     for (int i = 0; i < H; i++){
         for (int j = 0; j < W; j++){
             inverse_enemy = pos_stack[j].top();
             inverse_stack[j].push(inverse_enemy);
             pos_stack[j].pop();
         }
-    }
-    
-    for (int j = 0; j < H; j++){
-        for (int i = 0; i < W; i++){
-            cout << inverse_stack[i].top();
-            inverse_stack[i].pop();
-        }
-        cout << "\n";
     }
 
-    /*ShowResult
-    BaseStack<int> inverse_stack[6];
-    for (int i = 0; i < H; i++){
-        for (int j = 0; j < W; j++){
-            inverse_enemy = pos_stack[j].top();
-            inverse_stack[j].push(inverse_enemy);
-            pos_stack[j].pop();
-        }
-    }
-    
     for (int j = 0; j < H; j++){
         for (int i = 0; i < W; i++){
             if (!inverse_stack[i].top()){
-				cout << "_";
-			}else{
+                cout << "_";
+            }else{
                 cout << inverse_stack[i].top();
                 inverse_stack[i].pop();
             }
         }
         cout << "\n";
     }
-    */
     
+
     return 0;
-}
+} 
