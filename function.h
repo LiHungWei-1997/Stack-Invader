@@ -1,7 +1,9 @@
 #ifndef FUNCTION_H_
 #define FUNCTION_H_
 
+#include <iostream>
 #include <string>
+#include "function.h"
 using namespace std;
 
 // [TODO]: Implement all member functions in BaseStack
