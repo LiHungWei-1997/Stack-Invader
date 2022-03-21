@@ -186,6 +186,7 @@ void BaseQueue<T>::pop()
     }
 }
 
+// Test Stack & Queue
 /*
 int main()
 {
@@ -216,23 +217,8 @@ int main()
 }
 */
 
+// Test read data
 /*
-int main() {
-    ifstream ifs;
-    char buffer[256] = {0};
-
-    ifs.open("./13453_sampleIn.txt");
-    if (!ifs.is_open()) {
-        cout << "Failed to open file.\n" << endl;
-    } else {
-        ifs.read(buffer, sizeof(buffer));
-        cout << buffer << endl;
-        ifs.close();
-    }
-    return 0;
-}
-*/
-
 int main()
 {
     char buffer[256] = {0};
@@ -251,5 +237,80 @@ int main()
         ifs.close();
     }
     ifs.close();
+    return 0;
+}
+*/
+
+int main()
+{
+    //char buffer[256] = {0};
+    string s;
+    std::ifstream ifs("./13453_sampleIn.txt", std::ios::in);
+    if (!ifs.is_open())
+    {
+        cout << "Failed to open file.\n";
+    }
+
+    int W, H, M, enemy, inverse_enemy;
+    ifs >> W;
+    ifs >> H;
+    ifs >> M;
+
+    cout << "W: " << W << ", H: " << H << ", M: " << M << endl;
+
+    BaseStack<int> pos_stack[6];
+    for (int i = 0; i < H; i++){
+        for (int j = 0; j < W; j++){
+            ifs >> enemy;
+            pos_stack[j].push(enemy);
+        }
+    }
+
+    /* Test the data road
+    for(int i = 0; i < W; i++){
+        cout << pos_stack[i].top() << endl;
+    }
+    */
+
+    BaseStack<int> inverse_stack[6];
+    for (int i = 0; i < H; i++){
+        for (int j = 0; j < W; j++){
+            inverse_enemy = pos_stack[j].top();
+            inverse_stack[j].push(inverse_enemy);
+            pos_stack[j].pop();
+        }
+    }
+    
+    for (int j = 0; j < H; j++){
+        for (int i = 0; i < W; i++){
+            cout << inverse_stack[i].top();
+            inverse_stack[i].pop();
+        }
+        cout << "\n";
+    }
+
+    /*ShowResult
+    BaseStack<int> inverse_stack[6];
+    for (int i = 0; i < H; i++){
+        for (int j = 0; j < W; j++){
+            inverse_enemy = pos_stack[j].top();
+            inverse_stack[j].push(inverse_enemy);
+            pos_stack[j].pop();
+        }
+    }
+    
+    for (int j = 0; j < H; j++){
+        for (int i = 0; i < W; i++){
+            if (!inverse_stack[i].top()){
+				cout << "_";
+			}else{
+                cout << inverse_stack[i].top();
+                inverse_stack[i].pop();
+            }
+        }
+        cout << "\n";
+    }
+    */
+    
     return 0;
 }

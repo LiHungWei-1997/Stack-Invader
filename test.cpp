@@ -149,3 +149,28 @@ void InitialzeStage(int W, int H)
 void ShootNormal()
 {
 }
+
+for (int j=H+2;j >= 0;j--){
+		for(int i=0;i<W;i++){
+		
+			if (Hstack == NULL){
+				cout << "_";
+			}
+			cout << Hstack[i].top() ;
+			Hstack[i].pop();
+			
+			
+		}
+		cout << '\n';
+		
+	}
+
+    /* ShowResult
+    for (int j = 0; j < H; j++){
+        for (int i = 0; i < W; i++){
+            cout << pos_stack[i].top();
+            pos_stack[i].pop();
+        }
+        cout << "\n";
+    }
+    */
