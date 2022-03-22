@@ -291,22 +291,40 @@ int main()
     }
 
     // Enemy Type
-    BaseQueue<string> Bullet_queue;
+    BaseQueue<int> Bullet_queue[10];
     if (pos_stack[position].top() == "2") // Enemy 2
     {
-        Bullet_queue.push("Shotgun");
+        // Bullet_queue.push("Shotgun");
     }
     else if (pos_stack[position].top() == "3") // Enemy 3
     {
-        Bullet_queue.push("Penetration");
+        // Bullet_queue.push("Penetration");
     }
     else if (pos_stack[position].top() == "4") // Enemy 4
     {
-        Bullet_queue.push("Super");
+        // Bullet_queue.push("Super");
     }
     else if (pos_stack[position].top() == "5") // Enemy 5
     {
         pos_stack[position].pop(); // pop the enemy
+
+        while (index >= 0) // add "_"
+        {
+            pos_stack[position].push("_");
+            index--;
+        }
+
+        for (int j = 0; j <= W; j++)
+        {
+            if ((j >= (position - 2)) & (j <= (position + 2)))
+            {
+                cout << "ok " << j << endl;
+                for (int i = 0; i < 3; i++) // add enemy 1 by kill 5
+                {
+                    pos_stack[j].push("1");
+                }
+            }
+        }
 
         /*
         for (int j = -2; j <= 2; j++)
@@ -321,16 +339,15 @@ int main()
             }
         }
         */
+        // for (int j = -2; j <= 2; j++)
+        //{
+        //     for (int i = 0; i < 2; i++)
+        //     {
+        //         pos_stack[position].push("9");
+        //         cout << i << endl;
+        //     }
+        // }
     }
-
-    pos_stack[position].pop();
-
-    while (index >= 0) // add "_"
-    {
-        pos_stack[position].push("_");
-        index--;
-    }
-
     for (int i = 0; i < W; i++)
     {
         cout << pos_stack[i].size() << endl;
@@ -339,11 +356,14 @@ int main()
     {
         cout << pos_stack[i].top() << endl;
     }
-
-    cout << Bullet_queue.front() << endl;
-
     // pos_stack[position].pop(); // Enemy 1 // Pop the position have enemy
 
+    // for (int i = 0; i < (H - pos_stack[position].size() + 2); i++)
+    //{
+    //     pos_stack[position].push("_");
+    // }
+
+    /*
     // ShowResult (Consider without NA value (done))
     BaseStack<string> inverse_stack[6];
     for (int i = 0; i < H; i++)
@@ -369,6 +389,6 @@ int main()
         }
         cout << "\n";
     }
-
+    */
     return 0;
 }
