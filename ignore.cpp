@@ -103,7 +103,7 @@ T &BaseStack<T>::top()
 template <class T>
 void BaseStack<T>::push(const T &item)
 {
-    // assert(_top <= (_capacity - 1)); // error if capacity explode
+    assert(_top <= (_capacity - 1)); // error if capacity explode
 
     if (_stack == NULL)
     {
@@ -217,30 +217,6 @@ int main()
 }
 */
 
-// Test read data
-/*
-int main()
-{
-    char buffer[256] = {0};
-    string s;
-    std::ifstream ifs("./13453_sampleIn.txt", std::ios::in);
-    if (!ifs.is_open())
-    {
-        cout << "Failed to open file.\n";
-    }
-    else
-    {
-        while (ifs >> s)
-        {
-            cout << s << endl;
-        }
-        ifs.close();
-    }
-    ifs.close();
-    return 0;
-}
-*/
-
 int main()
 {
     // char buffer[256] = {0};
@@ -321,7 +297,6 @@ int main()
             }
         }
         */
-        // aa
     }
 
     pos_stack[position].pop();
