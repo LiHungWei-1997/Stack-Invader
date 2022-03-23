@@ -392,3 +392,173 @@ int main()
     */
     return 0;
 }
+
+void ShootSpecial(int col, int W){
+
+	
+	if(Q.front() == "sg"){
+	
+	for(int i=col-2;i<col+3;col++){
+		if(i < 0 & i > W){
+			continue;
+		}
+        ShootNormal(col,W);
+	}
+	Q.pop();
+	}
+	if(Q.front() == "p"){
+		int a;
+		a = Hstack[col].size();
+		Hstack[col].empty();
+		for (int i=0;i < a;i++ ){
+			Hstack[col].push('_');
+		}
+	}
+	if(Q.front() == "sb"){
+		int temp;
+		int temp_1;
+		int a = 0;
+		
+		while(true){
+			temp = Hstack[col].top();
+			Hstack[col].pop();
+			a++;
+			temp_1 =Hstack[col].top();
+			if(temp != temp_1){
+				break;
+			}
+			}
+		for(int i=1;i < a+1;i++){
+			Hstack[col].push('_');
+		}
+	}
+
+}
+
+void FrontRow(int W){
+	int i;
+	int j;
+	cout << "FRONT_ROW. LEVEL:"<<Hstack[0].size();
+	for (i=0;i<W;i++){
+		
+		//if (Hstack == NULL){
+		//	cout << "_";
+		//}
+		cout << Hstack[i].top();
+		
+	}
+}
+
+void ShootNormal(int col, int W){
+	int t;//count the _ 
+	if (Hstack[col].top() == '1'){
+	Hstack[col].pop();
+	Hstack[col].push('_');
+	//t++;
+	for(int i =0;i<W;i++){
+		cout <<Hstack[i].top()<<'\n'; 
+	}
+	}   
+	if (Hstack[col].top() == '2'){
+		string str1("sg");
+		Q.push(str1);
+		Hstack[col].pop();
+		Hstack[col].push('_');
+		//t++;
+	}else if (Hstack[col].top() =='3'){
+	    string str2("p");
+		Q.push(str2);
+		Hstack[col].pop();
+		Hstack[col].push('_');
+		//t++;
+		
+	}else if (Hstack[col].top() == '4'){
+	    string str3("sb");
+		Q.push(str3);
+		Hstack[col].pop();
+		Hstack[col].push('_');
+		//t++;
+		
+	}else if (Hstack[col].top() =='5'){
+		Hstack[col].pop();
+		Hstack[col].push('_');
+		int temp[5];
+		int a;
+		int max_temp;
+		for(int i=col-2;i<col+3;i++){
+			if (i < 0 || i > W) {
+				continue;
+			}
+			
+			if(Hstack[i].top() == '_'){
+				
+				a = Hstack[i].size() -1  ;
+			    temp[i-col+2] = a;
+			
+			}else{
+			
+			a = Hstack[i].size();
+			temp[i-col+2] = a;}
+		}
+		//see temp value
+		for(int i = 0; i < 5; i++){
+	   	cout << temp[i] << '\n';
+	   }
+	   	for(int i = 0;i < 5; ++i) {
+
+    
+           if(temp[0] < temp[i]){
+		   temp[0] = temp[i];
+		   }  
+           
+        }
+        max_temp = temp[0];
+ 
+        //cout << temp[0] <<'\n';
+        // up is compare
+        for(int i = col-2;i<col+3;i++){
+        	if (i<0){
+        		continue;
+			}
+			for(int j = max_temp+1;j<max_temp+4;j++){
+			//	if(Hstack[i].top() == '_'){
+			//		Hstack[i].pop();
+			//	}
+
+			    Hstack[i].push('1');
+			}
+			}
+		for(int i =0;i<W;i++){
+			cout <<Hstack[i].size()<<'\n'; 
+		}
+		for(int i=0 ;i < W;i++){
+			int tmp;
+			tmp = Hstack[i].size() - (max_temp+3);
+			if (tmp == 0){
+				continue;
+			} 
+			for(int j = max_temp+1; j< max_temp+4;j++){
+				Hstack[i].push('_');
+			}
+			}
+	//try show result		
+		for(int i =0;i<W;i++){
+			cout <<Hstack[i].top()<<'\n'; 
+		}
+		}
+	//
+	else if (Hstack[col].top() =='_'){
+        	Hstack[col].pop();
+        	t++;
+        	ShootNormal(col, W);
+        for(int i=1;i<t+1;i++){
+			Hstack[col].push('_');
+		}	
+	
+             //add back _
+
+		}
+	
+	
+		
+}

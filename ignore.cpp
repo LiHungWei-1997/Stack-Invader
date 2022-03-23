@@ -103,7 +103,7 @@ T &BaseStack<T>::top()
 template <class T>
 void BaseStack<T>::push(const T &item)
 {
-    //assert(_top <= (_capacity - 1)); // error if capacity explode
+    // assert(_top <= (_capacity - 1)); // error if capacity explode
 
     if (_stack == NULL)
     {
@@ -216,6 +216,9 @@ int main()
     cout << "answer: 1, 0, 7, 7, 2, 13" << endl;
 }
 */
+BaseStack<string> pos_stack[6];
+BaseQueue<string> Bullet_queue;
+BaseStack<string> inverse_stack[6];
 
 int main()
 {
@@ -238,7 +241,6 @@ int main()
     cout << "W: " << W << ", H: " << H << ", M: " << M << endl;
 
     // Read enemy
-    BaseStack<string> pos_stack[6];
     for (int i = 0; i < H; i++)
     {
         for (int j = 0; j < W; j++)
@@ -267,48 +269,121 @@ int main()
     }
 
     // Enemy Type
-    BaseQueue<string> Bullet_queue;
     if (pos_stack[position].top() == "5")
     {
         pos_stack[position].pop(); // pop the enemy
-        while (index >= 0) // add "_"
+        while (index >= 0)         // add _
         {
-        pos_stack[position].push("_");
-        index--;
+            pos_stack[position].push("_");
+            index--;
         }
 
         for (int j = 0; j < W; j++)
         {
-            if ((j >= (position - 2)) & (j <= (position + 2)))
+            if (j >= (position - 2) & j <= (position + 2))
             {
                 for (int i = 0; i < 3; i++) // add enemy 1 by kill 5
                 {
                     pos_stack[j].push("1");
                 }
-            }else
+            }
+            else
             {
-                for (int i = 0; i < 3; i++) // add enemy 1 by kill 5
+                for (int i = 0; i < 3; i++) // add enemy _ by kill 5
                 {
                     pos_stack[j].push("_");
                 }
             }
         }
-
-    }else
+    }
+    else
     {
-        /* Bullet Type: 
-        2: Shotgun
-        3: Penetration
-        4: Super
+        /* Bullet Type:
+        2: Shotgun bullet
+        3: Penetration bullet
+        4: Super bullet
         */
         Bullet_queue.push(pos_stack[position].top());
         pos_stack[position].pop();
 
         while (index >= 0) // add "_"
         {
-        pos_stack[position].push("_");
-        index--;
+            pos_stack[position].push("_");
+            index--;
         }
+    }
+
+    /*
+    // ShootSpecial
+    /// Shotgun bullet
+    if(Bullet_queue.front() == "2")
+    {
+        for (int i = position - 2; i < position + 3; i++)
+        {
+            if (i > 0 & i < W)
+            {
+                ShootNormal(position, W);
+            }
+        }
+    }
+    /// Penetration bullet
+    if(Bullet_queue.front() == "3")
+    {
+        while (pos_stack[position].empty())
+        {
+            ShootNormal(position, W);
+        }
+    }
+    /// Super bullet
+    if (Bullet_queue.front() == "4")
+    {
+        string top_1, top_2;
+        int super_index;
+
+        while (true)
+        {
+            top_1 = pos_stack[position].top();
+            pos_stack[position].pop();
+            top_2 = pos_stack[position].top();
+            super_index++;
+
+            if (top_1 != top_2) // Shoot the same enemy
+            {
+                break;
+            }
+        }
+        for (int i = 0; i < super_index; i++)
+        {
+            ShootNormal(position, W);
+        }
+
+    }
+    */
+
+    // FrontRow
+    int front_index = 0;
+    for (int i = 0; i < W; i++)
+    {
+        if (pos_stack[i].top() == "_")
+        {
+            front_index++;
+        }
+    }
+    if (front_index == W)
+    {
+        for (int i = 0; i < W; i++)
+        {
+            pos_stack[i].pop();
+        }
+    }
+    else
+    {
+        cout << "FRONT_ROW. LEVEL: " << pos_stack[0].size() << endl;
+        for (int i = 0; i < W; i++)
+        {
+            cout << pos_stack[i].top();
+        }
+        cout << "\n";
     }
 
     for (int i = 0; i < W; i++)
@@ -320,13 +395,12 @@ int main()
         cout << pos_stack[i].top() << endl;
     }
 
-    //cout << "Bullet Type: " << Bullet_queue.front() << endl;
+    // cout << "Bullet Type: " << Bullet_queue.front() << endl;
 
     // pos_stack[position].pop(); // Enemy 1 // Pop the position have enemy
 
     // ShowResult (Consider without NA value (done))
-    BaseStack<string> inverse_stack[6];
-    for (int i = 0; i < H; i++)
+    for (int i = 0; i < 6; i++)
     {
         for (int j = 0; j < W; j++)
         {
@@ -336,7 +410,8 @@ int main()
         }
     }
 
-    for (int j = 0; j < H; j++)
+    cout << "END_RESULT: " << endl;
+    for (int j = 0; j < 6; j++)
     {
         for (int i = 0; i < W; i++)
         {
