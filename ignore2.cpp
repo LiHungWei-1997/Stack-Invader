@@ -1,72 +1,10 @@
+#include "function.h"
 #include <iostream>
-#include <fstream>
 #include <string>
 using namespace std;
 
-#define STACK_SIZE 10000
-#define QUEUE_SIZE 300000
-
-template <class T>
-class BaseStack
-{
-public:
-    // Constructor
-    BaseStack();
-
-    // Destructor
-    ~BaseStack();
-
-    // Check if the stack is empty
-    bool empty();
-
-    // Return the size of the stack
-    int size();
-
-    // Return the top element
-    T &top();
-
-    // Insert a new element at top
-    void push(const T &item);
-
-    // Delete one element from top
-    void pop();
-
-private:
-    T *_stack;
-    int _top;
-    int _capacity;
-};
-
-template <class T>
-class BaseQueue
-{
-public:
-    // Constructor
-    BaseQueue();
-
-    // Destructor
-    ~BaseQueue();
-
-    // Check if the queue is empty
-    bool empty();
-
-    // Return the size of the queue
-    int size();
-
-    // Return the front element
-    T &front();
-
-    // Insert a new element at rear
-    void push(const T &item);
-
-    // Delete one element from front
-    void pop();
-
-private:
-    T *_queue;
-    int _front, _rear;
-    int _capacity;
-};
+#define STACK_SIZE 15000
+#define QUEUE_SIZE 30000
 
 // STACK
 template <class T>
@@ -156,7 +94,7 @@ int BaseQueue<T>::size()
 template <class T>
 T &BaseQueue<T>::front()
 {
-    assert(!empty()); // if empty print ERROR
+    // assert(!empty()); // if empty print ERROR
     return _queue[(_front) % _capacity];
 }
 
@@ -186,187 +124,197 @@ void BaseQueue<T>::pop()
     }
 }
 
-// Test Stack & Queue
-/*
-int main()
+BaseStack<string> pos_stack[6];
+BaseQueue<string> Bullet_queue;
+BaseStack<string> sb_stack[1];
+BaseStack<string> inverse_stack[6];
+
+void InitialzeStage(int W, int H)
 {
-    BaseStack<int> B;
-    cout << B.empty() << endl;
-    B.push(7);
-    cout << B.empty() << endl;
-    B.pop();
-    cout << B.top() << endl;
-    B.push(1);
-    cout << B.top() << endl;
-    B.pop();
-    cout << B.top() << endl;
-    cout << "answer: 1, 0, 6, 1, 6" << endl;
+    string enemy;
 
-    BaseQueue<int> A;
-    cout << A.empty() << endl;
-    A.push(7);
-    cout << A.empty() << endl;
-    A.push(13);
-    cout << A.front() << endl;
-    A.push(9);
-    cout << A.front() << endl;
-    A.pop();
-    cout << A.size() << endl;
-    cout << A.front() << endl;
-    cout << "answer: 1, 0, 7, 7, 2, 13" << endl;
-}
-*/
-
-// Test read data
-/*
-int main()
-{
-    char buffer[256] = {0};
-    string s;
-    std::ifstream ifs("./13453_sampleIn.txt", std::ios::in);
-    if (!ifs.is_open())
-    {
-        cout << "Failed to open file.\n";
-    }
-    else
-    {
-        while (ifs >> s)
-        {
-            cout << s << endl;
-        }
-        ifs.close();
-    }
-    ifs.close();
-    return 0;
-}
-*/
-
-int main()
-{
-    // char buffer[256] = {0};
-    string s;
-    std::ifstream ifs("./13453_sampleIn.txt", std::ios::in);
-    if (!ifs.is_open())
-    {
-        cout << "Failed to open file.\n";
-    }
-
-    // Variable declaration
-    int W, H, M, position;
-    ifs >> W;
-    ifs >> H;
-    ifs >> M;
-
-    string enemy, inverse_enemy, Bullet;
-
-    cout << "W: " << W << ", H: " << H << ", M: " << M << endl;
-
-    // Read enemy
-    BaseStack<string> pos_stack[6];
     for (int i = 0; i < H; i++)
     {
         for (int j = 0; j < W; j++)
         {
-            ifs >> enemy;
+            cin >> enemy;
             pos_stack[j].push(enemy);
         }
     }
+}
 
-    /* Test the data road
-    for(int i = 0; i < W; i++){
-        cout << pos_stack[i].top() << endl;
-    }
-    */
-
-    // ShootNormal
-    ifs >> Bullet;
-    ifs >> position;
-    cout << "Bullet: " << Bullet << ", position: " << position << endl;
+// ShootNormal
+void ShootNormal(int col, int W)
+{
     int index = 0;
 
-    while (pos_stack[position].top() == "_")
+    while (pos_stack[col].top() == "_")
     {
-        pos_stack[position].pop();
+        pos_stack[col].pop();
         index++;
     }
 
     // Enemy Type
-    BaseQueue<int> Bullet_queue[10];
-    if (pos_stack[position].top() == "2") // Enemy 2
+    if (pos_stack[col].top() == "5")
     {
-        // Bullet_queue.push("Shotgun");
-    }
-    else if (pos_stack[position].top() == "3") // Enemy 3
-    {
-        // Bullet_queue.push("Penetration");
-    }
-    else if (pos_stack[position].top() == "4") // Enemy 4
-    {
-        // Bullet_queue.push("Super");
-    }
-    else if (pos_stack[position].top() == "5") // Enemy 5
-    {
-        pos_stack[position].pop(); // pop the enemy
-
-        while (index >= 0) // add "_"
+        pos_stack[col].pop(); // pop the enemy
+        while (index >= 0)    // add _
         {
-            pos_stack[position].push("_");
+            pos_stack[col].push("_");
             index--;
         }
 
-        for (int j = 0; j <= W; j++)
+        for (int j = 0; j < W; j++)
         {
-            if ((j >= (position - 2)) & (j <= (position + 2)))
+            if (j >= (col - 2) & j <= (col + 2))
             {
-                cout << "ok " << j << endl;
                 for (int i = 0; i < 3; i++) // add enemy 1 by kill 5
                 {
                     pos_stack[j].push("1");
                 }
             }
-        }
-
-        /*
-        for (int j = -2; j <= 2; j++)
-        {
-            if (((j + position) >= 0) && ((j + position) <= W))
+            else
             {
-                for (int i = 0; i < 3; i++)// add enemy 1 by kill 5
+                for (int i = 0; i < 3; i++) // add enemy _ by kill 5
                 {
-                    pos_stack[j].push("1");
+                    pos_stack[j].push("_");
                 }
-
             }
         }
+    }
+    else if (pos_stack[col].top() != "1" & pos_stack[col].top() != "5")
+    {
+        /* Bullet Type:
+        2: Shotgun bullet
+        3: Penetration bullet
+        4: Super bullet
         */
-        // for (int j = -2; j <= 2; j++)
-        //{
-        //     for (int i = 0; i < 2; i++)
-        //     {
-        //         pos_stack[position].push("9");
-        //         cout << i << endl;
-        //     }
-        // }
+        Bullet_queue.push(pos_stack[col].top());
+        pos_stack[col].pop();
+
+        while (index >= 0) // add "_"
+        {
+            pos_stack[col].push("_");
+            index--;
+        }
     }
+    else
+    {
+        pos_stack[col].pop();
+
+        while (index >= 0) // add "_"
+        {
+            pos_stack[col].push("_");
+            index--;
+        }
+    }
+}
+
+void ShootSpecial(int col, int W)
+{
+    string top_1, top_2, sb_stack_top;
+    int super_index = 0;
+    int super_index_normal = 0;
+    int pos_stack_size = pos_stack[col].size();
+
+    if (!Bullet_queue.empty())
+    {
+        // Shotgun bullet
+        if (Bullet_queue.front() == "2")
+        {
+            for (int i = col - 2; i < col + 3; i++)
+            {
+                if (i > 0 & i < W)
+                {
+                    ShootNormal(col, W);
+                }
+            }
+        }
+        // Penetration bullet
+        else if (Bullet_queue.front() == "3")
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                ShootNormal(col, W);
+            }
+        }
+        // Super bullet
+        else if (Bullet_queue.front() == "4")
+        {
+            while (true)
+            {
+                top_1 = pos_stack[col].top();
+                sb_stack[0].push(top_1);
+                pos_stack[col].pop();
+                top_2 = pos_stack[col].top();
+                super_index++;
+
+                if (top_1 != top_2 & top_1 != "_" & top_2 != "_") // Shoot the same enemy
+                {
+                    break;
+                }
+                else if (sb_stack[0].size() == (pos_stack_size - 1))
+                {
+                    break;
+                }
+            }
+            for (int i = 0; i < super_index; i++)
+            {
+                sb_stack_top = sb_stack[0].top();
+                if (sb_stack_top != "_")
+                {
+                    super_index_normal++;
+                }
+
+                pos_stack[col].push(sb_stack_top);
+                sb_stack[0].pop();
+            }
+            for (int i = 0; i < super_index_normal; i++)
+            {
+                ShootNormal(col, W);
+            }
+        }
+
+        // cout << "super_index:" << super_index << endl;
+        // cout << "super_index_normal:" << super_index_normal << endl;
+    }
+}
+
+void FrontRow(int W)
+{
+    int front_index = 0;
+
     for (int i = 0; i < W; i++)
     {
-        cout << pos_stack[i].size() << endl;
+        if (pos_stack[i].top() == "_")
+        {
+            front_index++;
+        }
     }
-    for (int i = 0; i < W; i++)
+    if (front_index == W)
     {
-        cout << pos_stack[i].top() << endl;
+        for (int i = 0; i < W; i++)
+        {
+            pos_stack[i].pop();
+        }
     }
-    // pos_stack[position].pop(); // Enemy 1 // Pop the position have enemy
+    else
+    {
+        cout << "FRONT_ROW. LEVEL: " << pos_stack[0].size() << endl;
+        for (int i = 0; i < W; i++)
+        {
+            cout << pos_stack[i].top();
+        }
+        cout << "\n";
+    }
+}
 
-    // for (int i = 0; i < (H - pos_stack[position].size() + 2); i++)
-    //{
-    //     pos_stack[position].push("_");
-    // }
+void ShowResult(int W)
+{
+    int max_level = pos_stack[0].size();
+    string inverse_enemy;
 
-    /*
-    // ShowResult (Consider without NA value (done))
-    BaseStack<string> inverse_stack[6];
-    for (int i = 0; i < H; i++)
+    for (int i = 0; i < max_level; i++)
     {
         for (int j = 0; j < W; j++)
         {
@@ -375,8 +323,15 @@ int main()
             pos_stack[j].pop();
         }
     }
+    /*
+    for (int i = 0; i < 6; i++)
+    {
+        cout << inverse_stack[i].size() << endl;
+    }
+    */
 
-    for (int j = 0; j < H; j++)
+    cout << "END_RESULT: " << endl;
+    for (int j = 0; j < max_level; j++)
     {
         for (int i = 0; i < W; i++)
         {
@@ -389,176 +344,62 @@ int main()
         }
         cout << "\n";
     }
-    */
-    return 0;
 }
 
-void ShootSpecial(int col, int W){
+void deleteStage()
+{
+    while (!Bullet_queue.empty())
+    {
+        Bullet_queue.pop();
+    }
 
-	
-	if(Q.front() == "sg"){
-	
-	for(int i=col-2;i<col+3;col++){
-		if(i < 0 & i > W){
-			continue;
-		}
-        ShootNormal(col,W);
-	}
-	Q.pop();
-	}
-	if(Q.front() == "p"){
-		int a;
-		a = Hstack[col].size();
-		Hstack[col].empty();
-		for (int i=0;i < a;i++ ){
-			Hstack[col].push('_');
-		}
-	}
-	if(Q.front() == "sb"){
-		int temp;
-		int temp_1;
-		int a = 0;
-		
-		while(true){
-			temp = Hstack[col].top();
-			Hstack[col].pop();
-			a++;
-			temp_1 =Hstack[col].top();
-			if(temp != temp_1){
-				break;
-			}
-			}
-		for(int i=1;i < a+1;i++){
-			Hstack[col].push('_');
-		}
-	}
+    while (!sb_stack[0].empty())
+    {
+        sb_stack[0].pop();
+    }
 
-}
-
-void FrontRow(int W){
-	int i;
-	int j;
-	cout << "FRONT_ROW. LEVEL:"<<Hstack[0].size();
-	for (i=0;i<W;i++){
-		
-		//if (Hstack == NULL){
-		//	cout << "_";
-		//}
-		cout << Hstack[i].top();
-		
-	}
-}
-
-void ShootNormal(int col, int W){
-	int t;//count the _ 
-	if (Hstack[col].top() == '1'){
-	Hstack[col].pop();
-	Hstack[col].push('_');
-	//t++;
-	for(int i =0;i<W;i++){
-		cout <<Hstack[i].top()<<'\n'; 
-	}
-	}   
-	if (Hstack[col].top() == '2'){
-		string str1("sg");
-		Q.push(str1);
-		Hstack[col].pop();
-		Hstack[col].push('_');
-		//t++;
-	}else if (Hstack[col].top() =='3'){
-	    string str2("p");
-		Q.push(str2);
-		Hstack[col].pop();
-		Hstack[col].push('_');
-		//t++;
-		
-	}else if (Hstack[col].top() == '4'){
-	    string str3("sb");
-		Q.push(str3);
-		Hstack[col].pop();
-		Hstack[col].push('_');
-		//t++;
-		
-	}else if (Hstack[col].top() =='5'){
-		Hstack[col].pop();
-		Hstack[col].push('_');
-		int temp[5];
-		int a;
-		int max_temp;
-		for(int i=col-2;i<col+3;i++){
-			if (i < 0 || i > W) {
-				continue;
-			}
-			
-			if(Hstack[i].top() == '_'){
-				
-				a = Hstack[i].size() -1  ;
-			    temp[i-col+2] = a;
-			
-			}else{
-			
-			a = Hstack[i].size();
-			temp[i-col+2] = a;}
-		}
-		//see temp value
-		for(int i = 0; i < 5; i++){
-	   	cout << temp[i] << '\n';
-	   }
-	   	for(int i = 0;i < 5; ++i) {
-
-    
-           if(temp[0] < temp[i]){
-		   temp[0] = temp[i];
-		   }  
-           
+    for (int i = 0; i < 6; i++)
+    {
+        while (!pos_stack[i].empty())
+        {
+            pos_stack[i].pop();
+            inverse_stack[i].pop();
         }
-        max_temp = temp[0];
- 
-        //cout << temp[0] <<'\n';
-        // up is compare
-        for(int i = col-2;i<col+3;i++){
-        	if (i<0){
-        		continue;
-			}
-			for(int j = max_temp+1;j<max_temp+4;j++){
-			//	if(Hstack[i].top() == '_'){
-			//		Hstack[i].pop();
-			//	}
+    }
+}
 
-			    Hstack[i].push('1');
-			}
-			}
-		for(int i =0;i<W;i++){
-			cout <<Hstack[i].size()<<'\n'; 
-		}
-		for(int i=0 ;i < W;i++){
-			int tmp;
-			tmp = Hstack[i].size() - (max_temp+3);
-			if (tmp == 0){
-				continue;
-			} 
-			for(int j = max_temp+1; j< max_temp+4;j++){
-				Hstack[i].push('_');
-			}
-			}
-	//try show result		
-		for(int i =0;i<W;i++){
-			cout <<Hstack[i].top()<<'\n'; 
-		}
-		}
-	//
-	else if (Hstack[col].top() =='_'){
-        	Hstack[col].pop();
-        	t++;
-        	ShootNormal(col, W);
-        for(int i=1;i<t+1;i++){
-			Hstack[col].push('_');
-		}	
-	
-             //add back _
+int main()
+{
 
-		}
-	
-	
-		
+    int W, H, M;
+    int col;
+    string command;
+
+    cin >> W >> H;
+    cin >> M;
+
+    InitialzeStage(W, H);
+
+    for (int i = 0; i < M; i++)
+    {
+        cin >> command;
+        if (command == "SHOOT")
+        {
+            cin >> col;
+            ShootNormal(col, W);
+        }
+        else if (command == "SPECIAL")
+        {
+            cin >> col;
+            ShootSpecial(col, W);
+        }
+        else if (command == "FRONT_ROW")
+        {
+            FrontRow(W);
+        }
+    }
+
+    ShowResult(W);
+
+    return 0;
 }

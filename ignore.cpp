@@ -156,7 +156,7 @@ int BaseQueue<T>::size()
 template <class T>
 T &BaseQueue<T>::front()
 {
-    assert(!empty()); // if empty print ERROR
+    // assert(!empty()); // if empty print ERROR
     return _queue[(_front) % _capacity];
 }
 
@@ -218,6 +218,7 @@ int main()
 */
 BaseStack<string> pos_stack[6];
 BaseQueue<string> Bullet_queue;
+BaseQueue<string> sb_queue;
 BaseStack<string> inverse_stack[6];
 
 int main()
@@ -240,7 +241,7 @@ int main()
 
     cout << "W: " << W << ", H: " << H << ", M: " << M << endl;
 
-    // Read enemy
+    // InitialzeStage (Read enemy)
     for (int i = 0; i < H; i++)
     {
         for (int j = 0; j < W; j++)
@@ -262,6 +263,7 @@ int main()
     cout << "Bullet: " << Bullet << ", position: " << position << endl;
     int index = 0;
 
+    /*
     while (pos_stack[position].top() == "_")
     {
         pos_stack[position].pop();
@@ -296,27 +298,38 @@ int main()
             }
         }
     }
-    else
+    else if (pos_stack[position].top() != "1" & pos_stack[position].top() != "5")
     {
         /* Bullet Type:
         2: Shotgun bullet
         3: Penetration bullet
         4: Super bullet
         */
-        Bullet_queue.push(pos_stack[position].top());
-        pos_stack[position].pop();
+    Bullet_queue.push(pos_stack[position].top());
+    pos_stack[position].pop();
 
-        while (index >= 0) // add "_"
-        {
-            pos_stack[position].push("_");
-            index--;
-        }
+    while (index >= 0) // add "_"
+    {
+        pos_stack[position].push("_");
+        index--;
     }
+}
+else
+{
+    pos_stack[position].pop();
+
+    while (index >= 0) // add "_"
+    {
+        pos_stack[position].push("_");
+        index--;
+    }
+}
+* /
 
     /*
     // ShootSpecial
     /// Shotgun bullet
-    if(Bullet_queue.front() == "2")
+    if (Bullet_queue.front() == "2")
     {
         for (int i = position - 2; i < position + 3; i++)
         {
@@ -327,9 +340,9 @@ int main()
         }
     }
     /// Penetration bullet
-    if(Bullet_queue.front() == "3")
+    if (Bullet_queue.front() == "3")
     {
-        while (pos_stack[position].empty())
+        for (int i = 0; i < 3; i++)
         {
             ShootNormal(position, W);
         }
@@ -338,92 +351,103 @@ int main()
     if (Bullet_queue.front() == "4")
     {
         string top_1, top_2;
-        int super_index;
+        int super_index = 0;;
+        int pos_stack_size = pos_stack[position].size();
 
         while (true)
         {
             top_1 = pos_stack[position].top();
+            sb_queue.push(pos_stack[position].top());
             pos_stack[position].pop();
             top_2 = pos_stack[position].top();
             super_index++;
 
-            if (top_1 != top_2) // Shoot the same enemy
+            if (top_1 != top_2 & top_1 != "_" & top_2 != "_" ) // Shoot the same enemy
             {
                 break;
             }
+            if (sb_queue.size() == (pos_stack_size - 1))
+            {
+                break;
+            }
+
         }
         for (int i = 0; i < super_index; i++)
         {
+            pos_stack[position].push(sb_queue.front());
+            sb_queue.pop();
+        }
+        for (int i = 0; i < (super_index-1); i++)
+        {
             ShootNormal(position, W);
         }
-
     }
     */
-
     // FrontRow
     int front_index = 0;
+for (int i = 0; i < W; i++)
+{
+    if (pos_stack[i].top() == "_")
+    {
+        front_index++;
+    }
+}
+if (front_index == W)
+{
     for (int i = 0; i < W; i++)
     {
-        if (pos_stack[i].top() == "_")
-        {
-            front_index++;
-        }
+        pos_stack[i].pop();
     }
-    if (front_index == W)
-    {
-        for (int i = 0; i < W; i++)
-        {
-            pos_stack[i].pop();
-        }
-    }
-    else
-    {
-        cout << "FRONT_ROW. LEVEL: " << pos_stack[0].size() << endl;
-        for (int i = 0; i < W; i++)
-        {
-            cout << pos_stack[i].top();
-        }
-        cout << "\n";
-    }
-
+}
+else
+{
+    cout << "FRONT_ROW. LEVEL: " << pos_stack[0].size() << endl;
     for (int i = 0; i < W; i++)
     {
-        cout << pos_stack[i].size() << endl;
+        cout << pos_stack[i].top();
     }
+    cout << "\n";
+}
+
+for (int i = 0; i < W; i++)
+{
+    cout << pos_stack[i].size() << endl;
+}
+for (int i = 0; i < W; i++)
+{
+    cout << pos_stack[i].top() << endl;
+}
+
+// cout << "Bullet Type: " << Bullet_queue.front() << endl;
+
+// pos_stack[position].pop(); // Enemy 1 // Pop the position have enemy
+
+// ShowResult (Consider without NA value (done))
+int max_level = pos_stack[0].size();
+for (int i = 0; i < max_level; i++)
+{
+    for (int j = 0; j < W; j++)
+    {
+        inverse_enemy = pos_stack[j].top();
+        inverse_stack[j].push(inverse_enemy);
+        pos_stack[j].pop();
+    }
+}
+
+cout << "END_RESULT: " << endl;
+for (int j = 0; j < max_level; j++)
+{
     for (int i = 0; i < W; i++)
     {
-        cout << pos_stack[i].top() << endl;
+        // if (!inverse_stack[i].top()){ // for NA value "_"
+        //     cout << "_";
+        // }else{
+        cout << inverse_stack[i].top();
+        inverse_stack[i].pop();
+        //}
     }
+    cout << "\n";
+}
 
-    // cout << "Bullet Type: " << Bullet_queue.front() << endl;
-
-    // pos_stack[position].pop(); // Enemy 1 // Pop the position have enemy
-
-    // ShowResult (Consider without NA value (done))
-    for (int i = 0; i < 6; i++)
-    {
-        for (int j = 0; j < W; j++)
-        {
-            inverse_enemy = pos_stack[j].top();
-            inverse_stack[j].push(inverse_enemy);
-            pos_stack[j].pop();
-        }
-    }
-
-    cout << "END_RESULT: " << endl;
-    for (int j = 0; j < 6; j++)
-    {
-        for (int i = 0; i < W; i++)
-        {
-            // if (!inverse_stack[i].top()){ // for NA value "_"
-            //     cout << "_";
-            // }else{
-            cout << inverse_stack[i].top();
-            inverse_stack[i].pop();
-            //}
-        }
-        cout << "\n";
-    }
-
-    return 0;
+return 0;
 }
