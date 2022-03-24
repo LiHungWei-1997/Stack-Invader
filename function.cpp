@@ -6,6 +6,11 @@ using namespace std;
 #define STACK_SIZE 15000
 #define QUEUE_SIZE 30000
 
+/*
+1:accept
+5:accept
+*/
+
 // STACK
 template <class T>
 BaseStack<T>::BaseStack() : _top(-1), _capacity(STACK_SIZE)
@@ -124,10 +129,10 @@ void BaseQueue<T>::pop()
     }
 }
 
-BaseStack<string> pos_stack[6];
+BaseStack<string> pos_stack[100];
 BaseQueue<string> Bullet_queue;
-BaseQueue<string> sb_queue;
-BaseStack<string> inverse_stack[6];
+BaseStack<string> sb_stack[1];
+BaseStack<string> inverse_stack[100];
 
 void InitialzeStage(int W, int H)
 {
@@ -148,70 +153,78 @@ void ShootNormal(int col, int W)
 {
     int index = 0;
 
-    while (pos_stack[col].top() == "_")
+    if (col >= 0 & col < W)
     {
-        pos_stack[col].pop();
-        index++;
-    }
-
-    // Enemy Type
-    if (pos_stack[col].top() == "5")
-    {
-        pos_stack[col].pop(); // pop the enemy
-        while (index >= 0)    // add _
+        while (pos_stack[col].top() == "_")
         {
-            pos_stack[col].push("_");
-            index--;
+            pos_stack[col].pop();
+            index++;
         }
 
-        for (int j = 0; j < W; j++)
+        // Enemy Type
+        if (pos_stack[col].top() == "5")
         {
-            if (j >= (col - 2) & j <= (col + 2))
+            pos_stack[col].pop(); // pop the enemy
+            while (index >= 0)    // add _
             {
-                for (int i = 0; i < 3; i++) // add enemy 1 by kill 5
+                pos_stack[col].push("_");
+                index--;
+            }
+
+            for (int j = 0; j < W; j++)
+            {
+                if (j >= (col - 2) & j <= (col + 2))
                 {
-                    pos_stack[j].push("1");
+                    for (int i = 0; i < 3; i++) // add enemy 1 by kill 5
+                    {
+                        pos_stack[j].push("1");
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 3; i++) // add enemy _ by kill 5
+                    {
+                        pos_stack[j].push("_");
+                    }
                 }
             }
-            else
+        }
+        else if (pos_stack[col].top() != "1" & pos_stack[col].top() != "5")
+        {
+            /* Bullet Type:
+            2: Shotgun bullet
+            3: Penetration bullet
+            4: Super bullet
+            */
+            Bullet_queue.push(pos_stack[col].top());
+            pos_stack[col].pop();
+
+            while (index >= 0) // add "_"
             {
-                for (int i = 0; i < 3; i++) // add enemy _ by kill 5
-                {
-                    pos_stack[j].push("_");
-                }
+                pos_stack[col].push("_");
+                index--;
             }
         }
-    }
-    else if (pos_stack[col].top() != "1" & pos_stack[col].top() != "5")
-    {
-        /* Bullet Type:
-        2: Shotgun bullet
-        3: Penetration bullet
-        4: Super bullet
-        */
-        Bullet_queue.push(pos_stack[col].top());
-        pos_stack[col].pop();
-
-        while (index >= 0) // add "_"
+        else
         {
-            pos_stack[col].push("_");
-            index--;
-        }
-    }
-    else
-    {
-        pos_stack[col].pop();
+            pos_stack[col].pop();
 
-        while (index >= 0) // add "_"
-        {
-            pos_stack[col].push("_");
-            index--;
+            while (index >= 0) // add "_"
+            {
+                pos_stack[col].push("_");
+                index--;
+            }
         }
     }
 }
 
 void ShootSpecial(int col, int W)
 {
+    string top_1, top_2, sb_stack_top;
+    int super_index = 0;
+    int super_index_normal = 0;
+    int pos_stack_size = pos_stack[col].size();
+
     if (!Bullet_queue.empty())
     {
         // Shotgun bullet
@@ -219,11 +232,12 @@ void ShootSpecial(int col, int W)
         {
             for (int i = col - 2; i < col + 3; i++)
             {
-                if (i > 0 & i < W)
+                if (i >= 0 & i <= W)
                 {
-                    ShootNormal(col, W);
+                    ShootNormal(i, W);
                 }
             }
+            Bullet_queue.pop();
         }
         // Penetration bullet
         else if (Bullet_queue.front() == "3")
@@ -232,18 +246,15 @@ void ShootSpecial(int col, int W)
             {
                 ShootNormal(col, W);
             }
+            Bullet_queue.pop();
         }
         // Super bullet
         else if (Bullet_queue.front() == "4")
         {
-            string top_1, top_2;
-            int super_index = 0;
-            int pos_stack_size = pos_stack[col].size();
-
             while (true)
             {
                 top_1 = pos_stack[col].top();
-                sb_queue.push(pos_stack[col].top());
+                sb_stack[0].push(top_1);
                 pos_stack[col].pop();
                 top_2 = pos_stack[col].top();
                 super_index++;
@@ -252,48 +263,70 @@ void ShootSpecial(int col, int W)
                 {
                     break;
                 }
-                if (sb_queue.size() == (pos_stack_size - 1))
+                else if (sb_stack[0].size() == (pos_stack_size - 1))
                 {
                     break;
                 }
             }
             for (int i = 0; i < super_index; i++)
             {
-                pos_stack[col].push(sb_queue.front());
-                sb_queue.pop();
+                sb_stack_top = sb_stack[0].top();
+                if (sb_stack_top != "_")
+                {
+                    super_index_normal++;
+                }
+
+                pos_stack[col].push(sb_stack_top);
+                sb_stack[0].pop();
             }
-            for (int i = 0; i < (super_index - 1); i++)
+            for (int i = 0; i < super_index_normal; i++)
             {
                 ShootNormal(col, W);
             }
+            Bullet_queue.pop();
         }
     }
 }
 
 void FrontRow(int W)
 {
-    int front_index = 0;
-
     for (int i = 0; i < W; i++)
     {
-        if (pos_stack[i].top() == "_")
-        {
-            front_index++;
-        }
-    }
-    if (front_index == W)
-    {
-        for (int i = 0; i < W; i++)
+        while (pos_stack[i].top() == "_")
         {
             pos_stack[i].pop();
         }
     }
+    int MaxLevel = 0;
+    for (int j = 0; j < W; j++)
+    {
+        if (pos_stack[j].size() > MaxLevel)
+        {
+            MaxLevel = pos_stack[j].size();
+        }
+    }
+    if (MaxLevel == 0)
+    {
+        cout << "FRONT_ROW, LEVEL:" << MaxLevel << endl;
+    }
     else
     {
-        cout << "FRONT_ROW. LEVEL: " << pos_stack[0].size() << endl;
+        for (int k = 0; k < W; k++)
+        {
+            while (pos_stack[k].size() < MaxLevel)
+            {
+                pos_stack[k].push("_");
+            }
+        }
+
+        cout << "FRONT_ROW, LEVEL:" << MaxLevel << endl;
         for (int i = 0; i < W; i++)
         {
             cout << pos_stack[i].top();
+            if (i < W - 1)
+            {
+                cout << " ";
+            }
         }
         cout << "\n";
     }
@@ -313,8 +346,15 @@ void ShowResult(int W)
             pos_stack[j].pop();
         }
     }
+    /*
+    for (int i = 0; i < 6; i++)
+    {
+        cout << inverse_stack[i].size() << endl;
+    }
+    */
 
-    cout << "END_RESULT: " << endl;
+    cout << "END_RESULT:"
+         << "\n";
     for (int j = 0; j < max_level; j++)
     {
         for (int i = 0; i < W; i++)
@@ -322,11 +362,17 @@ void ShowResult(int W)
             // if (!inverse_stack[i].top()){ // for NA value "_"
             //     cout << "_";
             // }else{
-            cout << inverse_stack[i].top();
-            inverse_stack[i].pop();
-            //}
+            if (i == (W - 1))
+            {
+                cout << inverse_stack[i].top() << endl;
+                inverse_stack[i].pop();
+            }
+            else
+            {
+                cout << inverse_stack[i].top() << " ";
+                inverse_stack[i].pop();
+            }
         }
-        cout << "\n";
     }
 }
 
@@ -337,9 +383,9 @@ void deleteStage()
         Bullet_queue.pop();
     }
 
-    while (!sb_queue.empty())
+    while (!sb_stack[0].empty())
     {
-        sb_queue.pop();
+        sb_stack[0].pop();
     }
 
     for (int i = 0; i < 6; i++)
