@@ -3,8 +3,8 @@
 #include <string>
 using namespace std;
 
-#define STACK_SIZE 500000
-#define QUEUE_SIZE 500000
+#define STACK_SIZE 200000
+#define QUEUE_SIZE 200000
 
 /*
 1:accept
@@ -295,6 +295,10 @@ void ShootNormal(int col, int W)
                 index--;
             }
         }
+        else
+        {
+            ;
+        }
         // rebuild the enemy on all column
         int max_level3 = 0;
         for (int i = 0; i < W; i++)
@@ -512,12 +516,10 @@ void ShowResult(int W)
 
 void deleteStage()
 {
-    /*
     while (!Bullet_queue.empty())
     {
         Bullet_queue.pop();
     }
-    */
 
     while (!sb_stack[0].empty())
     {
