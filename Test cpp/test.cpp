@@ -3,8 +3,8 @@
 #include <string>
 using namespace std;
 
-#define STACK_SIZE 1000000
-#define QUEUE_SIZE 1000000
+#define STACK_SIZE 200000
+#define QUEUE_SIZE 200000
 
 /*
 1:accept
@@ -151,8 +151,11 @@ void InitialzeStage(int W, int H)
 // ShootNormal
 void ShootNormal(int col, int W)
 {
+    int index = 0;
+
     if (col >= 0 & col < W)
     {
+        /*
         while (true)
         {
             int index_deletenull = 0;
@@ -175,10 +178,11 @@ void ShootNormal(int col, int W)
                 break;
             }
         }
-
+        */
         while (pos_stack[col].top() == '_')
         {
             pos_stack[col].pop();
+            index++;
         }
 
         // Enemy Type
@@ -186,7 +190,7 @@ void ShootNormal(int col, int W)
         {
             pos_stack[col].pop(); // pop the enemy
 
-            // Clear all stage
+            // Clear all '_' on each stack
             for (int i = 0; i < W; i++)
             {
                 while (pos_stack[i].top() == '_')
@@ -196,7 +200,7 @@ void ShootNormal(int col, int W)
             }
 
             int max_level = 0; // record max level on needed column
-            for (int i = 0; i < W; i++) 
+            for (int i = 0; i < W; i++)
             {
                 if (i >= (col - 2) & i <= (col + 2))
                 {
@@ -224,12 +228,11 @@ void ShootNormal(int col, int W)
                     {
                         pos_stack[i].push('1');
                     }
-                    
                 }
             }
             // rebuild the enemy on all column
             int max_level2 = 0;
-            for (int i = 0; i < W; i++) 
+            for (int i = 0; i < W; i++)
             {
                 if (pos_stack[i].size() > max_level2)
                 {
@@ -253,33 +256,61 @@ void ShootNormal(int col, int W)
         {
             Bullet_queue.push(pos_stack[col].top());
             pos_stack[col].pop();
+
+            while (index >= 0) // add "_"
+            {
+                pos_stack[col].push('_');
+                index--;
+            }
         }
         else if (pos_stack[col].top() == '3')
         {
             Bullet_queue.push(pos_stack[col].top());
             pos_stack[col].pop();
+
+            while (index >= 0) // add "_"
+            {
+                pos_stack[col].push('_');
+                index--;
+            }
         }
         else if (pos_stack[col].top() == '4')
         {
             Bullet_queue.push(pos_stack[col].top());
             pos_stack[col].pop();
+
+            while (index >= 0) // add "_"
+            {
+                pos_stack[col].push('_');
+                index--;
+            }
         }
         else if (pos_stack[col].top() == '1')
         {
             pos_stack[col].pop();
+
+            while (index >= 0) // add "_"
+            {
+                pos_stack[col].push('_');
+                index--;
+            }
+        }
+        else
+        {
+            ;
         }
         // rebuild the enemy on all column
-        int max_level2 = 0;
-        for (int i = 0; i < W; i++) 
+        int max_level3 = 0;
+        for (int i = 0; i < W; i++)
         {
-            if (pos_stack[i].size() > max_level2)
+            if (pos_stack[i].size() > max_level3)
             {
-                max_level2 = pos_stack[i].size();
+                max_level3 = pos_stack[i].size();
             }
         }
         for (int i = 0; i < W; i++) // add '_' to match max level
         {
-            while (pos_stack[i].size() < max_level2)
+            while (pos_stack[i].size() < max_level3)
             {
                 pos_stack[i].push('_');
             }
@@ -290,9 +321,6 @@ void ShootNormal(int col, int W)
 void ShootSpecial(int col, int W)
 {
     char sb_stack_top;
-    // int super_index = 0;
-    // int super_index_normal = 0;
-    // int pos_stack_size = pos_stack[col].size();
 
     if (!Bullet_queue.empty() & (col >= 0) & (col < W))
     {
@@ -488,12 +516,10 @@ void ShowResult(int W)
 
 void deleteStage()
 {
-    /*
     while (!Bullet_queue.empty())
     {
         Bullet_queue.pop();
     }
-    */
 
     while (!sb_stack[0].empty())
     {
