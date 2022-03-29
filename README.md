@@ -13,3 +13,5 @@ The game logic is modified and simplified to make sure the problem can be solved
 - Implement the game core
   - Monitoring enemy positions
   - Player commands (firing bullets & querying enemy positions)
+
+Assignment Link: https://acm.cs.nthu.edu.tw/problem/13453/
